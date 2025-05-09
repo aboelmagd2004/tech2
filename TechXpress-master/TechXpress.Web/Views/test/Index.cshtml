@@ -1,0 +1,18 @@
+﻿@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <div class="alert alert-success d-flex align-items-center" role="alert">
+        <i class="bi bi-person-check-fill me-2"></i>
+        <div>
+            Welcome back, <strong>@User.Identity.Name</strong>!
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>
+            Please <a href="/Account/Login" class="alert-link">log in</a> to continue.
+        </div>
+    </div>
+}

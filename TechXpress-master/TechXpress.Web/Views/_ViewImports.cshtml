@@ -1,0 +1,8 @@
+﻿@using TechXpress.Web
+@using TechXpress.Web.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    var cartItemCount = HttpContextAccessor.HttpContext?.Items["CartItemCount"] as int? ?? 0;
+    ViewBag.CartItemCount = cartItemCount;
+}

@@ -1,0 +1,62 @@
+﻿@* @model TechXpress.Web.ViewModels.Products.ProductIndexViewModel *@
+
+@* <form asp-action="Index" method="get" class="mr-2" id="search-form"> *@
+@*     <input type="hidden" name="categoryId" value="@Model.SelectedCategoryId" /> *@
+@*     <input type="hidden" name="sortOrder" value="@Model.SortOrder" /> *@
+@*     <div class="input-group"> *@
+@*         <input type="text" class="form-control" name="searchTerm" *@
+@*                value="@Model.SearchTerm" placeholder="Search..." *@
+@*                id="search-input" autocomplete="on" /> *@
+@*         <div class="input-group-append"> *@
+@*             <button class="btn btn-outline-secondary" type="submit"> *@
+@*                 <i class="fas fa-search"></i> *@
+@*             </button> *@
+@*         </div> *@
+@*     </div> *@
+@* </form> *@
+@* @section Scripts { *@
+@*     <script> *@
+@*         $(function () { *@
+@*             var searchTimeout; *@
+
+@*             // Debounced search submission *@
+@*             $('#search-input').on('input', function() { *@
+@*                 clearTimeout(searchTimeout); *@
+@*                 searchTimeout = setTimeout(function() { *@
+@*                     if ($('#search-input').val().trim().length >= 2) { *@
+@*                         $('#search-form').submit(); *@
+@*                     } else if ($('#search-input').val().trim().length === 0) { *@
+@*                         // If search is cleared, submit to show all products *@
+@*                         $('#search-form').submit(); *@
+@*                     } *@
+@*                 }, 500); // 500ms debounce delay *@
+@*             }); *@
+
+@*             // Handle pressing Enter key *@
+@*             $('#search-input').on('keypress', function(e) { *@
+@*                 if (e.which === 13) { // Enter key *@
+@*                     e.preventDefault(); *@
+@*                     $('#search-form').submit(); *@
+@*                 } *@
+@*             }); *@
+
+@*             // Your existing price range and quick view code *@
+@*             $("#price-range").slider({ *@
+@*                 range: true, *@
+@*                 min: 0, *@
+@*                 max: 1000, *@
+@*                 values: [@(Model.MinPrice ?? 0), @(Model.MaxPrice ?? 1000)], *@
+@*                 slide: function(event, ui) { *@
+@*                     $("#min-price").val(ui.values[0]); *@
+@*                     $("#max-price").val(ui.values[1]); *@
+@*                 } *@
+@*             }); *@
+
+@*             $(document).on('click', '.quick-view-btn', function() { *@
+@*                 var productId = $(this).data('id'); *@
+@*                 $('#quickViewModal').modal('show'); *@
+@*                 $('#quickViewContent').load('@Url.Action("QuickView")/' + productId); *@
+@*             }); *@
+@*         }); *@
+@*     </script> *@
+@* } *@

@@ -1,0 +1,231 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TechXpress.Data.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var isDarkMode = Context.Request.Cookies["theme"] == "dark";
+    var currentUser = await UserManager.GetUserAsync(User);
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="@(isDarkMode ? "dark" : "light")">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TechXpress Admin</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>TechXpress</span>
+                    <small>Admin</small>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-user">
+                <div class="user-avatar">
+                    @if (currentUser?.ProfilePictureUrl != null)
+                    {
+                        var imgUrl = Url.Content("~" + currentUser.ProfilePictureUrl);
+                        <img src="@imgUrl" alt="User Avatar" />
+                    }
+                    else
+                    {
+                        <div class="avatar-placeholder">
+                            @(currentUser?.FirstName?.FirstOrDefault() ?? 'A')
+                        </div>
+                    }
+
+                </div>
+                <div class="user-info">
+                    <div class="user-name">@currentUser?.FirstName @currentUser?.LastName</div>
+                    <div class="user-role">
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            <span class="badge bg-danger">Super Admin</span>
+                        }
+                        else if (User.IsInRole("Admin"))
+                        {
+                            <span class="badge bg-primary">Admin</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <!-- Dashboard -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- User Management -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserRoleManagment" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Users" asp-action="Index">
+                            <i class="fas fa-users-cog"></i>
+                            <span>User Management</span>
+                        </a>
+                    </li>
+
+                    <!-- Product Management -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "ProductManagment" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Products" asp-action="Index">
+                            <i class="fas fa-boxes"></i>
+                            <span>Products</span>
+                        </a>
+                    </li>
+
+                    <!-- Orders -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "OrderManagment" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Orders" asp-action="Index">
+                            <i class="fas fa-shopping-basket"></i>
+                            <span>Orders</span>
+                            <span class="badge bg-primary">5</span> <!-- Badge showing number of orders -->
+                        </a>
+                    </li>
+
+                    <!-- Categories -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "CategoryManagment" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Categories" asp-action="Index">
+                            <i class="fas fa-tags"></i>
+                            <span>Categories</span>
+                        </a>
+                    </li>
+
+                    <!-- Reports -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Reports" asp-action="Index">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+
+                    <!-- Payments -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payments" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Payments" asp-action="Index">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Payments</span>
+                            <span class="badge bg-success">New</span> <!-- Badge showing new payments -->
+                        </a>
+                    </li>
+
+                    <!-- Settings -->
+                    <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Settings" asp-action="Index">
+                            <i class="fas fa-cogs"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+
+                    <!-- Log Out -->
+                    <li class="nav-item">
+                        <a asp-area="Admin" asp-controller="Account" asp-action="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="adminThemeToggle">
+                    <i class="@(isDarkMode ? "fas fa-sun" : "fas fa-moon")"></i>
+                    <span>@(isDarkMode ? "Light Mode" : "Dark Mode")</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Navigation -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle-mobile" id="sidebarToggleMobile">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="page-title-container">
+                        <h1 class="page-title">@ViewData["Title"]</h1>
+                    </div>
+                </div>
+
+                @* <div class="header-right"> *@
+                @*     <div class="header-user dropdown"> *@
+                @*         <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown"> *@
+                           
+
+                @*             <span>@currentUser?.FirstName</span> *@
+                @*         </button> *@
+                @*         <ul class="dropdown-menu dropdown-menu-end"> *@
+                @*             <li><h6 class="dropdown-header">@currentUser?.Email</h6></li> *@
+                @*             <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li> *@
+                @*             <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li> *@
+                @*             <li><hr class="dropdown-divider"></li> *@
+                @*             <li> *@
+                @*                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"> *@
+                @*                     <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Logout</button> *@
+                @*                 </form> *@
+                @*             </li> *@
+                @*         </ul> *@
+                @*     </div> *@
+                @* </div> *@
+            </header>
+
+            <!-- Page Content -->
+            <div class="admin-content">
+                <partial name="_StatusMessage" />
+                @RenderBody()
+            </div>
+
+            <!-- Footer -->
+            <footer class="admin-footer">
+                <div class="footer-left">
+                    &copy; @DateTime.Now.Year - TechXpress Admin
+                </div>
+                <div class="footer-right">
+                    <span>v1.0.0</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Admin JS -->
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

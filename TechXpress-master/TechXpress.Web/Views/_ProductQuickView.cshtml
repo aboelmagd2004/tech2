@@ -1,0 +1,17 @@
+﻿@model TechXpress.Data.Models.ProductViewModel
+@{
+    Layout = null;
+}
+<div class="modal-header">
+    <h5 class="modal-title">@(Model?.Name ?? "No Name")</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <img src="@(Model?.ImageUrl ?? "/images/no-image.png")" alt="@(Model?.Name)" class="img-fluid mb-3" />
+    <p><strong>Price:</strong> $@(Model?.Price ?? 0)</p>
+    <p><strong>Description:</strong> @(Model?.Description ?? "No description available.")</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <a href="@Url.Action("Details", "Products", new { id = Model?.Id })" class="btn btn-primary">View Details</a>
+</div>

@@ -1,0 +1,21 @@
+﻿@model TechXpress.Web.ViewModels.Products.ProductIndexViewModel
+
+@if (Model.Products.Any())
+{
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-md-4 mb-4">
+                @await Html.PartialAsync("_ProductCard", product)
+            </div>
+        }
+    </div>
+
+    @await Html.PartialAsync("_Pagination", Model)
+}
+else
+{
+    <div class="alert alert-info">
+        No products found matching your criteria.
+    </div>
+}

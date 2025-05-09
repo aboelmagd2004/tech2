@@ -1,0 +1,180 @@
+﻿@model TechXpress.Web.ViewModels.Products.ProductIndexViewModel
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5>Filters</h5>
+    </div>
+    <div class="card-body">
+        <form id="filter-form" method="get">
+            <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
+            <!-- Category Filter -->
+            <div class="mb-3">
+                <h6>Categories</h6>
+                <div class="list-group">
+                    <a asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortOrder="@Model.SortOrder"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       class="list-group-item list-group-item-action @(Model.SelectedCategoryId == null ? "active" : "")">
+                        All Categories
+                    </a>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <a asp-action="Index"
+                           asp-route-categoryId="@category.Id"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-sortOrder="@Model.SortOrder"
+                           asp-route-minPrice="@Model.MinPrice"
+                           asp-route-maxPrice="@Model.MaxPrice"
+                           class="list-group-item list-group-item-action @(Model.SelectedCategoryId == category.Id ? "active" : "")">
+                            @category.Name
+                        </a>
+                    }
+                </div>
+            </div>
+            <!-- Price Range Filter -->
+            <div class="mb-3">
+                <h6>Price Range</h6>
+                <div id="price-range" class="mb-2"></div>
+                <div class="row">
+                    <div class="col">
+                        <input type="number" id="min-price" class="form-control" name="minPrice" placeholder="Min" value="@Model.MinPrice" />
+                    </div>
+                    <div class="col">
+                        <input type="number" id="max-price" class="form-control" name="maxPrice" placeholder="Max" value="@Model.MaxPrice" />
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">Apply Filters</button>
+                <a asp-action="Index" asp-route-sortOrder="@Model.SortOrder" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Clear
+                </a>
+            </div>
+        </form>
+
+        <script>
+            // Optional: Add JavaScript to enhance the clear functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const clearBtn = document.querySelector('.btn-outline-secondary');
+
+                // Add click handler if you want additional behavior beyond the link navigation
+                clearBtn.addEventListener('click', function(e) {
+                    e.preventDefault(); 
+
+                    // Reset form fields programmatically if needed
+                    document.getElementById('min-price').value = '';
+                    document.getElementById('max-price').value = '';
+
+                    // If you prevented default, you'd need to navigate manually:
+                    window.location.href = clearBtn.getAttribute('href');
+                });
+            });
+        </script>
+    </div>
+</div>
+
+@if (Model.RecommendedProducts.Any())
+{
+    <div class="featured-products-slider">
+        @foreach (var product in Model.RecommendedProducts)
+        {
+            <div class="slider-item">
+                <div class="card h-100 shadow-sm">
+                    <div class="ratio ratio-1x1">
+                        <img src="@product.ImageUrl" class="card-img-top img-fluid" alt="@product.Name" style="object-fit: contain;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text text-primary"><strong>@product.Price.ToString("C")</strong></p>
+                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
+    <style>
+        .featured-products-slider {
+            margin: 0 -10px;
+        }
+
+        .slider-item {
+            padding: 0 10px;
+            float: left; /* Important for horizontal layout */
+            height: auto;
+        }
+
+        .slick-slide {
+            float: left; /* Ensures horizontal layout */
+        }
+
+        .slick-list {
+            overflow: hidden; /* Prevents vertical scrolling */
+        }
+
+        .slick-prev:before,
+        .slick-next:before {
+            color: #007bff;
+        }
+
+        .slick-dots li button:before {
+            font-size: 12px;
+        }
+
+        .card {
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.featured-products-slider').slick({
+                dots: true,
+                infinite: true,
+                speed: 500,
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 2000,
+                arrows: true,
+                responsive: [
+                    {
+                        breakpoint: 992,
+                        settings: {
+                            slidesToShow: 3,
+                            slidesToScroll: 1
+                        }
+                    },
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 1
+                        }
+                    },
+                    {
+                        breakpoint: 576,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+}

@@ -1,0 +1,163 @@
+﻿<!-- Views/Category/Details.cshtml -->
+@model CategoryDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+    ViewBag.Description = Model.MetaDescription;
+    ViewBag.Keywords = Model.MetaKeywords;
+}
+
+<div class="container mt-4">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Category")">Categories</a>
+            </li>
+
+            @if (ViewBag.Breadcrumbs is List<CategoryBreadcrumbViewModel> breadcrumbs && breadcrumbs.Any())
+            {
+                foreach (var breadcrumb in breadcrumbs)
+                {
+                    if (breadcrumb.IsCurrent)
+                    {
+                        <li class="breadcrumb-item active" aria-current="page">@breadcrumb.Name</li>
+                    }
+                    else
+                    {
+                        <li class="breadcrumb-item">
+                            <a href="@breadcrumb.Url">@breadcrumb.Name</a>
+                        </li>
+                    }
+                }
+            }
+        </ol>
+    </nav>
+
+    <h1>@Model.Name</h1>
+    <p>@Model.Description</p>
+
+    <!-- Sorting options -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Sort By
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item" href="@Url.Action("Details", new { slug = Model.Slug, sortBy = "newest" })">Newest</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Details", new { slug = Model.Slug, sortBy = "price-low-high" })">Price: Low to High</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Details", new { slug = Model.Slug, sortBy = "price-high-low" })">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("Details", new { slug = Model.Slug, sortBy = "name" })">Name</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <span>Showing @Model.Products.Count of @Model.Products.Count() products</span>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">@product.Description</p>
+                        <p class="h5">@product.Price.ToString("C")</p>
+                        <a href="@Url.Action("Details", "Products", new { id = product.Id })"
+                           class="btn btn-primary">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="row">
+        <div class="col">
+            @{
+                var prevDisabled = !Model.Products.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Products.HasNextPage ? "disabled" : "";
+            }
+
+            <nav aria-label="Product pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @prevDisabled">
+                        <a class="page-link"
+                           href="@Url.Action("Details", new {
+                               slug = Model.Slug,
+                               page = Model.Products.PageIndex - 1,
+                               sortBy = Context.Request.Query["sortBy"]
+                           })">
+                            Previous
+                        </a>
+                    </li>
+
+                    @for (var i = 1; i <= Model.Products.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Products.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("Details", new {
+                                   slug = Model.Slug,
+                                   page = i,
+                                   sortBy = Context.Request.Query["sortBy"]
+                               })">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item @nextDisabled">
+                        <a class="page-link"
+                           href="@Url.Action("Details", new {
+                               slug = Model.Slug,
+                               page = Model.Products.PageIndex + 1,
+                               sortBy = Context.Request.Query["sortBy"]
+                           })">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Related Categories -->
+    @if (Model.RelatedCategories.Any())
+    {
+        <div class="row mt-5">
+            <div class="col">
+                <h3>Related Categories</h3>
+                <div class="row">
+                    @foreach (var category in Model.RelatedCategories)
+                    {
+                        <div class="col-md-3 mb-3">
+                            <div class="card">
+                                <img src="@category.ImageUrl" class="card-img-top" alt="@category.Name">
+                                <div class="card-body">
+                                    <h5 class="card-title">@category.Name</h5>
+                                    <a href="@Url.Action("Details", new { slug = category.Slug })"
+                                       class="btn btn-sm btn-outline-primary">
+                                        View (@category.ProductCount)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

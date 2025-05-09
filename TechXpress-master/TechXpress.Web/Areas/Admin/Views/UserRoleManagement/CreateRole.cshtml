@@ -1,0 +1,16 @@
+﻿@model TechXpress.Web.Areas.Admin.Models.Role.CreateRoleViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<h2>Create New Role</h2>
+
+<form asp-action="CreateRole" method="post">
+    <div class="form-group">
+        <label for="RoleName">Role Name</label>
+        <input type="text" id="RoleName" class="form-control" asp-for="RoleName" />
+        <span asp-validation-for="RoleName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Create Role</button>
+</form>

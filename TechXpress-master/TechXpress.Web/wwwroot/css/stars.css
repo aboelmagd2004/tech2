@@ -1,0 +1,42 @@
+﻿.rating-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+    .rating-input input {
+        display: none;
+    }
+
+    .rating-input label {
+        color: #ddd;
+        font-size: 1.5rem;
+        padding: 0 0.1rem;
+        cursor: pointer;
+    }
+
+        .rating-input label:hover ~ label .fas,
+        .rating-input label:hover .fas,
+        .rating-input input:checked ~ label .fas,
+        .rating-input input:checked + label .fas {
+            display: inline;
+        }
+
+        .rating-input label:hover ~ label .far,
+        .rating-input label:hover .far,
+        .rating-input input:checked ~ label .far,
+        .rating-input input:checked + label .far {
+            display: none;
+        }
+
+.star-rating {
+    position: relative;
+}
+
+    .star-rating .far {
+        display: none;
+    }
+
+    .star-rating .fas {
+        display: inline;
+    }

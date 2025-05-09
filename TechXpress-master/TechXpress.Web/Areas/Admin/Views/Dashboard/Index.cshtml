@@ -1,0 +1,526 @@
+﻿@model TechXpress.Web.Areas.Admin.Models.DashboardViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    
+}
+
+@* <div class="dashboard-header"> *@
+@*     <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2> *@
+@*     <div class="date-selector"> *@
+@*         <select class="form-select" id="periodSelect"> *@
+@*             <option value="weekly">This Week</option> *@
+@*             <option value="monthly" selected>This Month</option> *@
+@*             <option value="yearly">This Year</option> *@
+@*         </select> *@
+@*     </div> *@
+@* </div> *@
+
+@* <div class="dashboard-stats"> *@
+@*     <div class="stat-card"> *@
+@*         <div class="stat-icon bg-primary"> *@
+@*             <i class="fas fa-users"></i> *@
+@*         </div> *@
+@*         <div class="stat-info"> *@
+@*             <h3>@Model.TotalUsers</h3> *@
+@*             <p>Total Users</p> *@
+@*             <span class="stat-change positive"> *@
+@*                 <i class="fas fa-arrow-up"></i> @Model.NewUsersThisMonth new this month *@
+@*             </span> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <div class="stat-card"> *@
+@*         <div class="stat-icon bg-success"> *@
+@*             <i class="fas fa-box-open"></i> *@
+@*         </div> *@
+@*         <div class="stat-info"> *@
+@*             <h3>@Model.TotalProducts</h3> *@
+@*             <p>Total Products</p> *@
+@*             <span class="stat-change neutral"> *@
+@*                 <i class="fas fa-equals"></i> Manage products *@
+@*             </span> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <div class="stat-card"> *@
+@*         <div class="stat-icon bg-info"> *@
+@*             <i class="fas fa-shopping-cart"></i> *@
+@*         </div> *@
+@*         <div class="stat-info"> *@
+@*             <h3>@Model.TotalOrders</h3> *@
+@*             <p>Total Orders</p> *@
+@*             <span class="stat-change neutral"> *@
+@*                 <i class="fas fa-equals"></i> View all orders *@
+@*             </span> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <div class="stat-card"> *@
+@*         <div class="stat-icon bg-warning"> *@
+@*             <i class="fas fa-dollar-sign"></i> *@
+@*         </div> *@
+@*         <div class="stat-info"> *@
+@*             <h3>@Model.Revenue.ToString("C")</h3> *@
+@*             <p>Total Revenue</p> *@
+@*             <span class="stat-change @(Model.RevenueChange >= 0 ? "positive" : "negative")"> *@
+@*                 <i class="fas @(Model.RevenueChange >= 0 ? "fa-arrow-up" : "fa-arrow-down")"></i> @Math.Abs(Model.RevenueChange).ToString("0.0")% *@
+@*             </span> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+
+@* <div class="dashboard-charts"> *@
+@*     <div class="chart-card"> *@
+@*         <div class="chart-header"> *@
+@*             <h3>Sales Overview</h3> *@
+@*             <div class="chart-actions"> *@
+@*                 <button class="btn-chart-action active" data-period="weekly">Week</button> *@
+@*                 <button class="btn-chart-action" data-period="monthly">Month</button> *@
+@*                 <button class="btn-chart-action" data-period="yearly">Year</button> *@
+@*             </div> *@
+@*         </div> *@
+@*         <div class="chart-container"> *@
+@*             <canvas id="salesChart"></canvas> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <div class="chart-card"> *@
+@*         <div class="chart-header"> *@
+@*             <h3>User Activity</h3> *@
+@*         </div> *@
+@*         <div class="chart-container"> *@
+@*             <canvas id="activityChart"></canvas> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+
+@* <div class="dashboard-tables"> *@
+@*     <div class="table-card"> *@
+@*         <div class="table-header"> *@
+@*             <h3>Recent Orders</h3> *@
+@*             <a asp-controller="Orders" asp-action="Index" class="btn-view-all">View All</a> *@
+@*         </div> *@
+@*         <div class="table-responsive"> *@
+@*             <table class="table"> *@
+@*                 <thead> *@
+@*                     <tr> *@
+@*                         <th>Order ID</th> *@
+@*                         <th>Customer</th> *@
+@*                         <th>Amount</th> *@
+@*                         <th>Status</th> *@
+@*                         <th>Date</th> *@
+@*                         <th>Action</th> *@
+@*                     </tr> *@
+@*                 </thead> *@
+@*                 <tbody> *@
+@*                     @foreach (var order in Model.RecentOrders) *@
+@*                     { *@
+@*                         <tr> *@
+@*                             <td>#@order.OrderId</td> *@
+@*                             <td>@order.CustomerName</td> *@
+@*                             <td>@order.Amount.ToString("C")</td> *@
+@*                             <td><span class="status-badge @order.Status.ToLower()">@order.Status</span></td> *@
+@*                             <td>@order.Date</td> *@
+@*                             <td> *@
+@*                                 <a href="#" class="btn-action" title="View Details"> *@
+@*                                     <i class="fas fa-eye"></i> *@
+@*                                 </a> *@
+@*                             </td> *@
+@*                         </tr> *@
+@*                     } *@
+@*                 </tbody> *@
+@*             </table> *@
+@*         </div> *@
+@*     </div> *@
+
+
+
+@* @section Scripts { *@
+@*     <!-- Include jQuery before other scripts --> *@
+@*     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+@*     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script> *@
+
+@*     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
+@*     <script> *@
+@*         $(document).ready(function () { *@
+@*             const salesCtx = document.getElementById('salesChart').getContext('2d'); *@
+@*             const activityCtx = document.getElementById('activityChart').getContext('2d'); *@
+
+@*             // Sample data (replace with dynamic values via AJAX or Razor if needed) *@
+@*             let salesData = { *@
+@*                 labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], *@
+@*                 datasets: [{ *@
+@*                     label: 'Sales', *@
+@*                     data: [1000, 1500, 1300, 1800], *@
+@*                     backgroundColor: 'rgba(54, 162, 235, 0.5)', *@
+@*                     borderColor: 'rgba(54, 162, 235, 1)', *@
+@*                     fill: true, *@
+@*                     tension: 0.4 *@
+@*                 }] *@
+@*             }; *@
+
+@*             let activityData = { *@
+@*                 labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], *@
+@*                 datasets: [{ *@
+@*                     label: 'Active Users', *@
+@*                     data: [120, 150, 130, 170, 200, 180, 160], *@
+@*                     backgroundColor: 'rgba(255, 206, 86, 0.5)', *@
+@*                     borderColor: 'rgba(255, 206, 86, 1)', *@
+@*                     fill: true, *@
+@*                     tension: 0.4 *@
+@*                 }] *@
+@*             }; *@
+
+@*             const salesChart = new Chart(salesCtx, { *@
+@*                 type: 'line', *@
+@*                 data: salesData, *@
+@*                 options: { *@
+@*                     responsive: true, *@
+@*                     plugins: { *@
+@*                         legend: { position: 'top' } *@
+@*                     } *@
+@*                 } *@
+@*             }); *@
+
+@*             const activityChart = new Chart(activityCtx, { *@
+@*                 type: 'line', *@
+@*                 data: activityData, *@
+@*                 options: { *@
+@*                     responsive: true, *@
+@*                     plugins: { *@
+@*                         legend: { position: 'top' } *@
+@*                     } *@
+@*                 } *@
+@*             }); *@
+
+@*             // Chart period button logic (mock behavior) *@
+@*             $('.btn-chart-action').click(function () { *@
+@*                 $('.btn-chart-action').removeClass('active'); *@
+@*                 $(this).addClass('active'); *@
+@*                 const period = $(this).data('period'); *@
+
+@*                 // Example change of data based on period *@
+@*                 if (period === 'monthly') { *@
+@*                     salesChart.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4']; *@
+@*                     salesChart.data.datasets[0].data = [1000, 1500, 1300, 1800]; *@
+@*                 } else if (period === 'weekly') { *@
+@*                     salesChart.data.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']; *@
+@*                     salesChart.data.datasets[0].data = [200, 180, 220, 250, 270, 300, 310]; *@
+@*                 } else if (period === 'yearly') { *@
+@*                     salesChart.data.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']; *@
+@*                     salesChart.data.datasets[0].data = [8000, 9500, 7200, 8800, 9900, 10200]; *@
+@*                 } *@
+
+@*                 salesChart.update(); *@
+@*             }); *@
+@*         }); *@
+@*     </script> *@
+@* } *@
+
+@* @section Styles { *@
+@*     <style> *@
+@*         .dashboard-header { *@
+@*             display: flex; *@
+@*             justify-content: space-between; *@
+@*             align-items: center; *@
+@*             margin-bottom: 2rem; *@
+@*         } *@
+        
+@*         .dashboard-header h2 { *@
+@*             margin: 0; *@
+@*             font-size: 1.75rem; *@
+@*             color: var(--dark); *@
+@*         } *@
+        
+@*         .dashboard-header h2 i { *@
+@*             margin-right: 0.75rem; *@
+@*             color: var(--primary); *@
+@*         } *@
+        
+@*         .date-selector .form-select { *@
+@*             width: 150px; *@
+@*             border-radius: 8px; *@
+@*             border-color: var(--border-color); *@
+@*         } *@
+        
+@*         .dashboard-stats { *@
+@*             display: grid; *@
+@*             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); *@
+@*             gap: 1.5rem; *@
+@*             margin-bottom: 2rem; *@
+@*         } *@
+        
+@*         .stat-card { *@
+@*             background: var(--card-bg); *@
+@*             border-radius: 12px; *@
+@*             padding: 1.5rem; *@
+@*             display: flex; *@
+@*             align-items: center; *@
+@*             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); *@
+@*             transition: transform 0.3s ease, box-shadow 0.3s ease; *@
+@*         } *@
+        
+@*         .stat-card:hover { *@
+@*             transform: translateY(-5px); *@
+@*             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); *@
+@*         } *@
+        
+@*         .stat-icon { *@
+@*             width: 60px; *@
+@*             height: 60px; *@
+@*             border-radius: 12px; *@
+@*             display: flex; *@
+@*             align-items: center; *@
+@*             justify-content: center; *@
+@*             margin-right: 1.5rem; *@
+@*             color: white; *@
+@*             font-size: 1.5rem; *@
+@*         } *@
+        
+@*         .stat-info h3 { *@
+@*             font-size: 1.75rem; *@
+@*             margin: 0 0 0.25rem; *@
+@*             color: var(--dark); *@
+@*         } *@
+        
+@*         .stat-info p { *@
+@*             margin: 0; *@
+@*             color: var(--text-muted); *@
+@*             font-size: 0.9rem; *@
+@*         } *@
+        
+@*         .stat-change { *@
+@*             display: inline-flex; *@
+@*             align-items: center; *@
+@*             font-size: 0.8rem; *@
+@*             margin-top: 0.5rem; *@
+@*         } *@
+        
+@*         .stat-change i { *@
+@*             margin-right: 0.25rem; *@
+@*             font-size: 0.7rem; *@
+@*         } *@
+        
+@*         .stat-change.positive { *@
+@*             color: var(--success); *@
+@*         } *@
+        
+@*         .stat-change.negative { *@
+@*             color: var(--danger); *@
+@*         } *@
+        
+@*         .stat-change.neutral { *@
+@*             color: var(--info); *@
+@*         } *@
+        
+@*         .dashboard-charts { *@
+@*             display: grid; *@
+@*             grid-template-columns: 1fr 1fr; *@
+@*             gap: 1.5rem; *@
+@*             margin-bottom: 2rem; *@
+@*         } *@
+        
+@*         .chart-card { *@
+@*             background: var(--card-bg); *@
+@*             border-radius: 12px; *@
+@*             padding: 1.5rem; *@
+@*             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); *@
+@*         } *@
+        
+@*         .chart-header { *@
+@*             display: flex; *@
+@*             justify-content: space-between; *@
+@*             align-items: center; *@
+@*             margin-bottom: 1.5rem; *@
+@*         } *@
+        
+@*         .chart-header h3 { *@
+@*             margin: 0; *@
+@*             font-size: 1.25rem; *@
+@*             color: var(--dark); *@
+@*         } *@
+        
+@*         .chart-actions { *@
+@*             display: flex; *@
+@*             gap: 0.5rem; *@
+@*         } *@
+        
+@*         .btn-chart-action { *@
+@*             padding: 0.25rem 0.75rem; *@
+@*             border-radius: 20px; *@
+@*             border: 1px solid var(--border-color); *@
+@*             background: transparent; *@
+@*             font-size: 0.8rem; *@
+@*             cursor: pointer; *@
+@*             transition: all 0.2s ease; *@
+@*         } *@
+        
+@*         .btn-chart-action.active { *@
+@*             background: var(--primary); *@
+@*             color: white; *@
+@*             border-color: var(--primary); *@
+@*         } *@
+        
+@*         .chart-container { *@
+@*             height: 250px; *@
+@*             position: relative; *@
+@*         } *@
+        
+@*         .dashboard-tables { *@
+@*             display: grid; *@
+@*             grid-template-columns: 1fr 1fr; *@
+@*             gap: 1.5rem; *@
+@*         } *@
+        
+@*         .table-card { *@
+@*             background: var(--card-bg); *@
+@*             border-radius: 12px; *@
+@*             overflow: hidden; *@
+@*             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); *@
+@*         } *@
+        
+@*         .table-header { *@
+@*             display: flex; *@
+@*             justify-content: space-between; *@
+@*             align-items: center; *@
+@*             padding: 1.25rem 1.5rem; *@
+@*             border-bottom: 1px solid var(--border-color); *@
+@*         } *@
+        
+@*         .table-header h3 { *@
+@*             margin: 0; *@
+@*             font-size: 1.25rem; *@
+@*             color: var(--dark); *@
+@*         } *@
+        
+@*         .btn-view-all { *@
+@*             color: var(--primary); *@
+@*             font-size: 0.9rem; *@
+@*             text-decoration: none; *@
+@*             font-weight: 500; *@
+@*             transition: color 0.2s ease; *@
+@*         } *@
+        
+@*         .btn-view-all:hover { *@
+@*             color: var(--primary-dark); *@
+@*             text-decoration: underline; *@
+@*         } *@
+        
+@*         .table { *@
+@*             width: 100%; *@
+@*             border-collapse: collapse; *@
+@*         } *@
+        
+@*         .table th { *@
+@*             background: var(--light); *@
+@*             padding: 0.75rem 1rem; *@
+@*             text-align: left; *@
+@*             font-size: 0.85rem; *@
+@*             color: var(--text-muted); *@
+@*             font-weight: 600; *@
+@*         } *@
+        
+@*         .table td { *@
+@*             padding: 1rem; *@
+@*             border-bottom: 1px solid var(--border-color); *@
+@*             font-size: 0.9rem; *@
+@*         } *@
+        
+@*         .status-badge { *@
+@*             display: inline-block; *@
+@*             padding: 0.25rem 0.75rem; *@
+@*             border-radius: 20px; *@
+@*             font-size: 0.75rem; *@
+@*             font-weight: 600; *@
+@*         } *@
+        
+@*         .status-badge.pending { *@
+@*             background: rgba(246, 194, 62, 0.1); *@
+@*             color: var(--warning); *@
+@*         } *@
+        
+@*         .status-badge.completed { *@
+@*             background: rgba(28, 200, 138, 0.1); *@
+@*             color: var(--success); *@
+@*         } *@
+        
+@*         .status-badge.processing { *@
+@*             background: rgba(78, 115, 223, 0.1); *@
+@*             color: var(--primary); *@
+@*         } *@
+        
+@*         .status-badge.cancelled { *@
+@*             background: rgba(231, 74, 59, 0.1); *@
+@*             color: var(--danger); *@
+@*         } *@
+        
+@*         .user-avatar { *@
+@*             display: flex; *@
+@*             align-items: center; *@
+@*             gap: 0.75rem; *@
+@*         } *@
+        
+@*         .user-avatar img { *@
+@*             width: 32px; *@
+@*             height: 32px; *@
+@*             border-radius: 50%; *@
+@*             object-fit: cover; *@
+@*         } *@
+        
+@*         .role-badge { *@
+@*             display: inline-block; *@
+@*             padding: 0.25rem 0.75rem; *@
+@*             border-radius: 20px; *@
+@*             font-size: 0.75rem; *@
+@*             font-weight: 600; *@
+@*         } *@
+        
+@*         .role-badge.admin { *@
+@*             background: rgba(78, 115, 223, 0.1); *@
+@*             color: var(--primary); *@
+@*         } *@
+        
+@*         .role-badge.user { *@
+@*             background: rgba(108, 117, 125, 0.1); *@
+@*             color: var(--secondary); *@
+@*         } *@
+        
+@*         .btn-action { *@
+@*             color: var(--text-muted); *@
+@*             padding: 0.25rem; *@
+@*             border-radius: 4px; *@
+@*             transition: all 0.2s ease; *@
+@*         } *@
+        
+@*         .btn-action:hover { *@
+@*             color: var(--primary); *@
+@*             background: var(--primary-light); *@
+@*         } *@
+        
+@*         @@media (max-width: 1200px) { *@
+@*             .dashboard-charts, *@
+@*             .dashboard-tables { *@
+@*                 grid-template-columns: 1fr; *@
+@*             } *@
+@*         } *@
+        
+@*         @@media (max-width: 768px) { *@
+@*             .dashboard-header { *@
+@*                 flex-direction: column; *@
+@*                 align-items: flex-start; *@
+@*                 gap: 1rem; *@
+@*             } *@
+            
+@*             .date-selector { *@
+@*                 width: 100%; *@
+@*             } *@
+            
+@*             .date-selector .form-select { *@
+@*                 width: 100%; *@
+@*             } *@
+@*         } *@
+@*     </style> *@
+@* } *@

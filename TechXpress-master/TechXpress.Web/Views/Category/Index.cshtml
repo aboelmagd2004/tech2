@@ -1,0 +1,83 @@
+﻿<!-- Views/Category/Index.cshtml -->
+@model CategoryListViewModel
+
+@{
+    ViewData["Title"] = "All Categories";
+  
+
+}
+
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+               Categories
+            </li>
+        </ol>
+    </nav>
+
+<div class="container mt-4">
+
+
+    
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <div class="row">
+        @foreach (var category in Model.Categories)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@category.ImageUrl" class="card-img-top" alt="@category.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Name</h5>
+                        <p class="card-text">@category.Description</p>
+                        <a href="@Url.Action("Details", new { slug = category.Slug })"
+                           class="btn btn-primary">
+                            View Products (@category.ProductCount)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col">
+            @{
+                var prevDisabled = !Model.Categories.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Categories.HasNextPage ? "disabled" : "";
+            }
+
+            <nav aria-label="Category pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @prevDisabled">
+                        <a class="page-link"
+                           href="@Url.Action("Index", new { page = Model.Categories.PageIndex - 1 })">
+                            Previous
+                        </a>
+                    </li>
+
+                    @for (var i = 1; i <= Model.Categories.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Categories.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { page = i })">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item @nextDisabled">
+                        <a class="page-link"
+                           href="@Url.Action("Index", new { page = Model.Categories.PageIndex + 1 })">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

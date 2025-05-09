@@ -1,0 +1,249 @@
+﻿@using TechXpress.Web.Extensions
+@model TechXpress.Web.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Your Shopping Cart";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+        </li>
+     
+        <li class="breadcrumb-item active" aria-current="page">
+            Cart
+        </li>
+    </ol>
+</nav>
+<div class="container mt-4">
+    @if (Model == null || !Model.Items.Any())
+    {
+        <div class="alert alert-info">
+            Your cart is empty. <a href="@Url.Action("Index", "Products")" class="alert-link">Continue shopping</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <h2>Your Cart</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="img-thumbnail cart-item-image">
+                                            <div class="ms-3">
+                                                <h5 class="mb-1">@item.Product.Name</h5>
+                                                @if (item.Product.StockQuantity < item.Quantity)
+                                                {
+                                                    <span class="badge bg-warning">Only @item.Product.StockQuantity left</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@item.Product.Price.ToCurrencyString()</td>
+                                    <td>
+                                        <form asp-action="UpdateQuantity" method="post" class="update-quantity-form">
+                                            <input type="hidden" name="ProductId" value="@item.Product.Id" />
+                                            <div class="input-group" style="width: 120px;">
+                                                <button class="btn btn-outline-secondary quantity-btn" type="button" data-action="decrease">-</button>
+                                                <input type="number" name="Quantity" value="@item.Quantity" min="1" max="@item.Product.StockQuantity"
+                                                       class="form-control text-center quantity-input" data-product-id="@item.Product.Id" style="padding:0px;" />
+                                                <button class="btn btn-outline-secondary quantity-btn" type="button" data-action="increase">+</button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                    <td class="item-total" data-product-id="@item.Product.Id">@item.TotalPrice.ToCurrencyString()</td>
+                                    <td>
+                                        <form asp-action="Remove" method="post">
+                                            <input type="hidden" name="ProductId" value="@item.Product.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="@Url.Action("Index", "Products")" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i> Continue Shopping
+                    </a>
+                    <form asp-action="Clear" method="post">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Clear Cart
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span id="cart-subtotal">@Model.Subtotal.ToCurrencyString()</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span id="cart-shipping">@Model.Shipping.ToCurrencyString()</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax:</span>
+                            <span id="cart-tax">@Model.Tax.ToCurrencyString()</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold fs-5">
+                            <span>Total:</span>
+                            <span id="cart-total">@Model.Total.ToCurrencyString()</span>
+                        </div>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a href="@Url.Action("Checkout", "Cart")" class="btn btn-primary w-100 mt-3">
+                                Proceed to Checkout
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning mt-3">
+                                <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("Checkout") })" class="alert-link">Sign in</a> to checkout
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Quantity button handlers
+            $('.quantity-btn').click(function() {
+                var input = $(this).closest('.input-group').find('.quantity-input');
+                var currentVal = parseInt(input.val());
+                var max = parseInt(input.attr('max'));
+                var min = parseInt(input.attr('min'));
+
+                if ($(this).data('action') === 'increase') {
+                    if (currentVal < max) {
+                        input.val(currentVal + 1).change();
+                    }
+                } else {
+                    if (currentVal > min) {
+                        input.val(currentVal - 1).change();
+                    }
+                }
+            });
+
+            // Quantity change handler
+            $('.quantity-input').change(function() {
+                var form = $(this).closest('form');
+                var productId = $(this).data('product-id');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            // Update item total
+                            $(`.item-total[data-product-id="${productId}"]`).text(response.itemTotal);
+
+                            // Update cart summary
+                            $('#cart-subtotal').text(response.cartSubtotal);
+                            $('#cart-tax').text(response.cartTax);
+                            $('#cart-shipping').text(response.cartShipping);
+                            $('#cart-total').text(response.cartTotal);
+
+                            // Update cart count in navbar
+                            $('.cart-item-count').text(response.cartItemCount);
+                        }
+                    },
+                    error: function() {
+                        alert('Error updating quantity');
+                    }
+                });
+            });
+
+            // Remove item handler
+            $('form[action="/cart/remove"]').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                if (confirm('Are you sure you want to remove this item from your cart?')) {
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: 'POST',
+                        data: form.serialize(),
+                        success: function(response) {
+                            if (response.success) {
+                                form.closest('tr').fadeOut(300, function() {
+                                    $(this).remove();
+                                    // If cart is now empty, reload page
+                                    if ($('tbody tr').length === 0) {
+                                        location.reload();
+                                    }
+                                });
+
+                                // Update cart summary
+                                $('#cart-subtotal').text(response.cartSubtotal);
+                                $('#cart-tax').text(response.cartTax);
+                                $('#cart-shipping').text(response.cartShipping);
+                                $('#cart-total').text(response.cartTotal);
+
+                                // Update cart count in navbar
+                                $('.cart-item-count').text(response.cartItemCount);
+                            }
+                        },
+                        error: function() {
+                            alert('Error removing item');
+                        }
+                    });
+                }
+            });
+
+            // Clear cart handler
+            $('form[action="/cart/clear"]').submit(function(e) {
+                e.preventDefault();
+
+                if (confirm('Are you sure you want to clear your entire cart?')) {
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        success: function(response) {
+                            if (response.success) {
+                                location.reload();
+                            }
+                        },
+                        error: function() {
+                            alert('Error clearing cart');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

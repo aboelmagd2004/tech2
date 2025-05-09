@@ -1,0 +1,21 @@
+﻿@model TechXpress.Web.ViewModels.Products.ProductIndexViewModel
+
+<div class="dropdown">
+    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Sort: @Model.SortOptions[Model.SortOrder ?? ""]
+    </button>
+    <div class="dropdown-menu" aria-labelledby="sortDropdown">
+        @foreach (var option in Model.SortOptions)
+        {
+            <a class="dropdown-item @(Model.SortOrder == option.Key ? "active" : "")"
+               asp-action="Index"
+               asp-route-categoryId="@Model.SelectedCategoryId"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-sortOrder="@option.Key"
+               asp-route-minPrice="@Model.MinPrice"
+               asp-route-maxPrice="@Model.MaxPrice">
+                @* @option.Value *@
+            </a>
+        }
+    </div>
+</div>

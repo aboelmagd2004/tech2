@@ -1,0 +1,35 @@
+﻿        /* Optional styling for the AI button */
+        .ai - description - btn {
+width: 40px;
+padding: 0.25rem;
+}
+
+        .ai - generated - content {
+    line - height: 1.6;
+}
+
+/* Make the modal slightly wider for better readability */
+@@media(min - width: 576px) {
+# aiDescriptionModal .modal-dialog {
+    max - width: 600px;
+}
+        }
+        /* Animation for smoother modal transitions */
+        .modal.fade.modal - dialog {
+transition: transform 0.3s ease-out;
+}
+
+        /* Make the close button more visible */
+        .modal - header.close {
+    font - size: 1.5rem;
+opacity: 0.75;
+}
+
+            .modal - header.close:hover {
+                opacity: 1;
+            }
+
+        /* Footer button styling */
+        .modal - footer.btn {
+    min - width: 100px;
+}

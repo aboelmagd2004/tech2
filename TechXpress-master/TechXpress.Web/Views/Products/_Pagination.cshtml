@@ -1,0 +1,21 @@
+﻿@using X.PagedList.Mvc.Core
+@model TechXpress.Web.ViewModels.Products.ProductIndexViewModel
+
+<div class="d-flex justify-content-center">
+    @Html.PagedListPager(Model.Products, page => Url.Action("Index", new
+        {
+            page,
+            categoryId = Model.SelectedCategoryId,
+            searchTerm = Model.SearchTerm,
+            sortOrder = Model.SortOrder,
+            minPrice = Model.MinPrice,
+            maxPrice = Model.MaxPrice
+        }), new PagedListRenderOptions
+{
+    LiElementClasses = new[] { "page-item" },
+    PageClasses = new[] { "page-link" },
+    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+    MaximumPageNumbersToDisplay = 5
+})
+</div>

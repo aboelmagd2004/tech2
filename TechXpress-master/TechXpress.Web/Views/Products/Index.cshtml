@@ -1,0 +1,339 @@
+﻿@model TechXpress.Web.ViewModels.Products.ProductIndexViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                Products
+            </li>
+        </ol>
+    </nav>
+<div class="container mt-4">
+
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-md-3">
+            @await Html.PartialAsync("_ProductFilters", Model)
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Products</h2>
+                <div class="d-flex">
+                    <form asp-action="Index" method="get" id="search-form" class="mr-2">
+                        <input type="hidden" name="categoryId" value="@Model.SelectedCategoryId" />
+                        <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
+                        <input type="hidden" name="minPrice" value="@Model.MinPrice" />
+                        <input type="hidden" name="maxPrice" value="@Model.MaxPrice" />
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="searchTerm"
+                                   value="@Model.SearchTerm" placeholder="Search..."
+                                   id="search-input" autocomplete="off" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    @await Html.PartialAsync("_ProductSort", Model)
+                </div>
+            </div>
+
+            @if (Model.Products.Any())
+            {
+                <div class="row">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-md-4 mb-4">
+                            @await Html.PartialAsync("_ProductCard", product)
+                        </div>
+                    }
+                </div>
+
+                @await Html.PartialAsync("_Pagination", Model)
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No products found matching your criteria.
+                </div>
+            }
+        </div>
+
+        <div class="modal fade" id="aiDescriptionModal" tabindex="-1" role="dialog" aria-labelledby="aiDescriptionModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="aiDescriptionModalLabel">
+                            <i class="fas fa-robot mr-2"></i>AI-Powered Description
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="aiDescriptionContent">
+                            <!-- Content will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times mr-2"></i>Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Quick View Modal -->
+        <div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Product Quick View</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Content will be loaded via AJAX -->
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add this right before the closing </div> of your container -->
+    <div class="ai-chatbot-container">
+        <!-- Chatbot Toggle Button -->
+        <button class="btn btn-primary ai-chatbot-toggle rounded-circle shadow-lg">
+            <i class="fas fa-robot"></i>
+        </button>
+
+        <!-- Chatbot Window (hidden by default) -->
+        <div class="ai-chatbot-window card shadow-lg">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">TechXpress AI Assistant</h5>
+                <button class="btn btn-sm btn-light close-chatbot">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="card-body chatbot-messages" style="height: 300px; overflow-y: auto;">
+                <div class="welcome-message">
+                    <p>Hello! I'm your TechXpress shopping assistant. How can I help you today?</p>
+                    <div class="suggested-questions">
+                        <small class="text-muted">Try asking:</small>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="suggested-question">What are the top laptops under $10000 in 2025?</a></li>
+                            <li><a href="#" class="suggested-question">Can you recommend the best wireless headphones right now?</a></li>
+                            <li><a href="#" class="suggested-question">What are the best tech deals available today?</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="input-group">
+                    <input type="text" class="form-control chatbot-input" placeholder="Ask me anything..." />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary send-message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(function() { 
+             // Quick view modal
+            document.querySelectorAll('.quick-view-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const quickViewModal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+
+                    fetch(`/Products/QuickView/${productId}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.querySelector('#quickViewModal .modal-body').innerHTML = html;
+                            quickViewModal.show();
+                        });
+                });
+            });
+            // Real-time search with debounce
+            var searchTimeout;
+            $('#search-input').on('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    if ($('#search-input').val().trim().length >= 2 ||
+                        $('#search-input').val().trim().length === 0) {
+                        $("#search-form").submit();
+                    }
+                }, 500); // 500ms debounce delay
+            });
+
+            // Handle Enter key press
+            $('#search-input').on('keypress', function(e) {
+                if (e.which === 13) { // Enter key
+                    e.preventDefault();
+                    $("#search-form").submit();
+                }
+            });
+
+          
+        });
+
+
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+                    // 1. Close via Close Button
+        $('[data-dismiss="modal"]').click(function() {
+            aiDescriptionModal.modal('hide');
+        });
+
+        // 2. Close via Escape Key
+        $(document).keydown(function(e) {
+            if (e.key === "Escape" && aiDescriptionModal.hasClass('show')) {
+                aiDescriptionModal.modal('hide');
+            }
+        });
+
+        // 3. Close by Clicking Outside Modal
+        aiDescriptionModal.click(function(event) {
+            if ($(event.target).is('.modal')) {
+                aiDescriptionModal.modal('hide');
+            }
+        });
+
+        // 4. Programmatic Close (if needed elsewhere)
+        window.closeAIModal = function() {
+            aiDescriptionModal.modal('hide');
+        };
+
+
+
+            // AI Description Button Click Handler
+            $('.ai-description-btn').click(function() {
+                const productId = $(this).data('product-id');
+                $('#aiDescriptionModal').modal('show');
+
+                // Load AI description
+                $.get('/Test/GenerateProductDescription', { Id: productId })
+                    .done(function(data) {
+                        $('#aiDescriptionContent').html('<div class="ai-generated-content">' +
+                            data.replace(/\n/g, '<br>') + '</div>');
+                    })
+                    .fail(function() {
+                        $('#aiDescriptionContent').html(
+                            '<div class="alert alert-danger">Failed to generate description. Please try again.</div>'
+                        );
+                    });
+            });
+
+            // Reset modal content when closed
+            $('#aiDescriptionModal').on('hidden.bs.modal', function() {
+                $('#aiDescriptionContent').html(
+                    '<div class="text-center">' +
+                    '   <div class="spinner-border text-primary" role="status">' +
+                    '       <span class="sr-only">Loading...</span>' +
+                    '   </div>' +
+                    '   <p>Generating AI description...</p>' +
+                    '</div>'
+                );
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            // Toggle chatbot visibility
+            $('.ai-chatbot-toggle').click(function() {
+                $('.ai-chatbot-window').toggle('fast');
+                $(this).toggleClass('btn-primary btn-secondary');
+            });
+
+            // Close chatbot
+            $('.close-chatbot').click(function() {
+                $('.ai-chatbot-window').hide('fast');
+                $('.ai-chatbot-toggle').removeClass('btn-secondary').addClass('btn-primary');
+            });
+
+            // Handle sending messages
+            $('.send-message').click(sendMessage);
+            $('.chatbot-input').keypress(function(e) {
+                if (e.which === 13) { // Enter key
+                    sendMessage();
+                }
+            });
+
+            // Suggested questions
+            $('.suggested-question').click(function(e) {
+                e.preventDefault();
+                const question = $(this).text();
+                $('.chatbot-input').val(question);
+                sendMessage();
+            });
+
+            function sendMessage() {
+                const input = $('.chatbot-input');
+                const message = input.val().trim();
+
+                if (message === '') return;
+
+                // Add user message to chat
+                addMessage(message, 'user');
+                input.val('');
+
+                // Show typing indicator
+                const typingIndicator = $('<div class="bot-message message typing-indicator">')
+                    .html('<span></span><span></span><span></span>')
+                    .appendTo('.chatbot-messages');
+
+                // Scroll to bottom
+                $('.chatbot-messages').scrollTop($('.chatbot-messages')[0].scrollHeight);
+
+                // Send to AI service
+                $.post('/Test/RespondToCustomerQuery', { query: message })
+                    .done(function(response) {
+                        typingIndicator.remove();
+                        addMessage(response, 'bot');
+                    })
+                    .fail(function() {
+                        typingIndicator.remove();
+                        addMessage("Sorry, I'm having trouble connecting to the service. Please try again later.", 'bot');
+                    });
+            }
+
+            function addMessage(text, sender) {
+                const messageClass = sender === 'user' ? 'user-message' : 'bot-message';
+                const messageElement = $('<div class="message ' + messageClass + '">')
+                    .text(text)
+                    .hide()
+                    .appendTo('.chatbot-messages');
+
+                messageElement.fadeIn('fast');
+                $('.chatbot-messages').scrollTop($('.chatbot-messages')[0].scrollHeight);
+            }
+        });
+    </script>
+}

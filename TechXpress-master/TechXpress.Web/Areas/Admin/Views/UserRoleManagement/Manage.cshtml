@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Manage User Roles";
+    var allRoles = (List<Microsoft.AspNetCore.Identity.IdentityRole>)ViewBag.AllRoles;
+    var userRoles = (IList<string>)ViewBag.UserRoles;
+    string userId = ViewBag.UserId;
+    string userEmail = ViewBag.UserEmail;
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Manage Roles for @userEmail</h2>
+
+<h4>Current Roles:</h4>
+<ul>
+    @foreach (var role in userRoles)
+    {
+        <li>
+            @role
+            <form asp-action="RemoveRole" method="post" class="d-inline">
+                <input type="hidden" name="userId" value="@userId" />
+                <input type="hidden" name="role" value="@role" />
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+        </li>
+    }
+</ul>
+
+<hr />
+<h4>Assign New Role</h4>
+<form asp-action="AddRole" method="post" class="form-inline">
+    <input type="hidden" name="userId" value="@userId" />
+    <select name="role" class="form-control">
+        @foreach (var role in allRoles)
+        {
+            if (!userRoles.Contains(role.Name))
+            {
+                <option value="@role.Name">@role.Name</option>
+            }
+        }
+    </select>
+    <button type="submit" class="btn btn-success ml-2">Add Role</button>
+</form>
+
+<p class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to Users</a>
+</p>

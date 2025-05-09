@@ -1,0 +1,58 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using TechXpress.Data.Models
+@model Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h2>Order #@Model.Id</h2>
+<p><strong>Customer:</strong> @Model.User?.FirstName</p>
+<p><strong>Status:</strong> @Model.OrderStatus</p>
+<p><strong>Created At:</strong> @Model.OrderDate.ToString("f")</p>
+<p><strong>Admin Notes:</strong> @Model.AdminNotes</p>
+
+<h4>Order Items</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderDetails)
+        {
+            <tr>
+                <td>@item.Product?.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@(item.Quantity * item.Price).ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h5>Total: @Model.TotalAmount.ToString("C")</h5>
+
+<hr />
+<h4>Update Order Status</h4>
+<form asp-action="UpdateStatus" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label for="newStatus">New Status</label>
+       @Html.DropDownList("newStatus", Html.GetEnumSelectList<OrderStatus>(), new { @class = "form-control" })
+
+    </div>
+
+    <div class="form-group">
+        <label for="adminNotes">Admin Notes</label>
+        <textarea name="adminNotes" class="form-control" rows="3">@Model.AdminNotes</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>

@@ -1,0 +1,200 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TechXpress.Data.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var profileUrl = User?.FindFirst("ProfilePictureUrl")?.Value;
+    var cartCount = ViewBag.CartItemCount as int? ?? 0;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="TechXpress – Your one-stop shop for all tech needs." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TechXpress</title>
+
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <!-- AOS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TechXpress.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/stars.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Ai.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chatbot.css" asp-append-version="true" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Navbar -->
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-laptop-code me-2 fs-3"></i>
+                    <span class="fw-bold fs-4">TechXpress</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString()=="Home"?"active":"")"
+                               asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString()=="Products"?"active":"")"
+                               asp-controller="Products" asp-action="Index">
+                                <i class="fas fa-box-open me-1"></i> Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString()=="Category"?"active":"")"
+                               asp-controller="Category" asp-action="Index">
+                                <i class="fas fa-tags me-1"></i> Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString()=="Orders"?"active":"")"
+                               asp-controller="Orders" asp-action="Index">
+                                <i class="fas fa-clipboard-list me-1"></i> Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString()=="Privacy"?"active":"")"
+                               asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-shield-alt me-1"></i> Privacy
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <a class="btn btn-icon btn-outline-light position-relative me-3" asp-controller="Cart" asp-action="Index">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    @cartCount
+                                </span>
+                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                                    <div class="avatar-sm me-2">
+                                        <div class="avatar-title bg-white text-primary rounded-circle">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    </div>
+                                    <span>@UserManager.GetUserName(User)</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Manage"><i class="fas fa-user-cog me-2"></i>Manage Account</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <img src="@profileUrl" alt="Profile" class="rounded-circle ms-3" style="width:40px;height:40px;object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-light me-2" asp-controller="Account" asp-action="Login"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
+                            <a class="btn btn-light" asp-controller="Account" asp-action="Register"><i class="fas fa-user-plus me-1"></i>Register</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Offcanvas Menu -->
+    <div class="offcanvas offcanvas-start text-white bg-dark" tabindex="-1" id="offcanvasNav">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title"><i class="fas fa-laptop-code me-2"></i>TechXpress</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link px-0 @(ViewContext.RouteData.Values["Controller"]?.ToString()=="Home"?"active":"")"
+                       asp-controller="Home" asp-action="Index"><i class="fas fa-home me-2"></i>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-0 @(ViewContext.RouteData.Values["Controller"]?.ToString()=="Products"?"active":"")"
+                       asp-controller="Products" asp-action="Index"><i class="fas fa-box-open me-2"></i>Products</a>
+                </li>
+                <!-- كرر الباقي بنفس الطريقة -->
+            </ul>
+            <div class="mt-auto pt-3 border-top border-secondary">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-outline-light w-100"><i class="fas fa-sign-out-alt me-1"></i>Logout</button>
+                    </form>
+                }
+                else
+                {
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Login</a>
+                        <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Register">Register</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <!-- ... محتوى الفوتر كما في الكود السابق ... -->
+            </div>
+            <hr class="border-secondary" />
+            <div class="d-flex justify-content-between">
+                <p class="small mb-0">&copy; 2025 TechXpress. All rights reserved.</p>
+                <img src="~/images/payment-methods.jpeg" alt="Payment methods" style="max-height:30px;" />
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>toastr.success('@Html.Raw(Json.Serialize(TempData["SuccessMessage"]))');</text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>toastr.error('@Html.Raw(Json.Serialize(TempData["ErrorMessage"]))');</text>
+        }
+    </script>
+
+    @RenderSection("Styles", required: false)
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

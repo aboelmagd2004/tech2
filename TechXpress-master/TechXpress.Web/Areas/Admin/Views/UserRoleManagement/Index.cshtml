@@ -1,0 +1,37 @@
+﻿@model List<TechXpress.Web.Areas.Admin.Models.Role.UserRoleViewModel>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>User Role Management</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>
+                    @foreach (var role in user.Roles)
+                    {
+                        <span class="badge badge-primary">@role</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="AssignRole" asp-route-userId="@user.UserId" class="btn btn-primary">Assign Role</a>
+                    <a asp-action="RemoveRole" asp-route-userId="@user.UserId" class="btn btn-danger">Remove Role</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

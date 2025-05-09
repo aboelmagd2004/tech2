@@ -1,0 +1,68 @@
+﻿@using TechXpress.Web.Services.Interfaces
+@model TechXpress.Data.Models.ProductViewModel
+@inject IAICommerceService AiCommerce
+
+<div class="card h-100 product-card">
+    <div class="badge-container">
+        @if (Model.IsFeatured)
+        {
+            <span class="badge badge-featured">Featured</span>
+        }
+        @if (Model.CreatedDate > DateTime.Now.AddDays(-7))
+        {
+            <span class="badge badge-new">New</span>
+        }
+    </div>
+    <img src="@Model.ImageUrl" class="card-img-top" alt="@Model.Name">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="text-muted mb-2">Category: @Model.Category?.Name</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="text-primary font-weight-bold">@Model.Price.ToString("C")</span>
+            @if (Model.Reviews.Any())
+            {
+                <div class="text-warning">
+                    @for (int i = 0; i < (int)Model.Reviews.Average(r => r.Rating); i++)
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    @if (Model.Reviews.Average(r => r.Rating) % 1 > 0)
+                    {
+                        <i class="fas fa-star-half-alt"></i>
+                    }
+                    <small>(@Model.Reviews.Count())</small>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card-footer bg-transparent d-flex flex-row gap-2">
+        <!-- View Details Button -->
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary btn-block" title="View Details">
+            <i class="fas fa-file-alt"></i>
+        </a>
+
+        <!-- Add to Cart Button -->
+        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <button type="submit"
+                    class="btn btn-success btn-block"
+            @(Model.StockQuantity == 0 ? "disabled title='Out of stock'" : "title='Add to Cart'")>
+                <i class="fas fa-cart-plus"></i>
+            </button>
+        </form>
+
+        <!-- Quick View Button -->
+        <button class="btn btn-sm btn-outline-secondary quick-view-btn" data-product-id="@Model.Id">
+            <i class="far fa-eye"></i>
+        </button>
+
+        <!-- NEW: AI Description Button -->
+        <button class="btn btn-sm btn-outline-info ai-description-btn"
+                data-product-id="@Model.Id"
+                title="AI Description">
+            <i class="fas fa-robot"></i>
+        </button>
+    </div>
+</div>
+

@@ -1,0 +1,22 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<div class="page-title-container">
+    <h1 class="page-title">
+        @if (ViewData["Title"] != null)
+        {
+            @ViewData["Title"]
+        }
+        else
+        {
+            @($"{controller} - {action}")
+        }
+    </h1>
+
+    @if (ViewData["Description"] != null)
+    {
+        <p class="page-description">@ViewData["Description"]</p>
+    }
+</div>

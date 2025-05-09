@@ -1,0 +1,97 @@
+﻿<!-- Areas/Admin/Views/Category/Index.cshtml -->
+@model IEnumerable<CategoryViewModel>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="Create" class="btn btn-success">Create New</a>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Products</th>
+                <th>Order</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Slug</td>
+                    <td>@item.ProductCount</td>
+                    <td>@item.DisplayOrder</td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input toggle-status"
+                                   type="checkbox"
+                                   data-category-id="@item.Id"
+                            @(item.IsActive ? "checked" : "")>
+                            <label class="form-check-label">
+                                @(item.IsActive ? "Active" : "Inactive")
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                        <button class="btn btn-sm btn-danger delete-btn"
+                                data-category-id="@item.Id"
+                                data-category-name="@item.Name">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Toggle status
+            $('.toggle-status').change(function() {
+                const categoryId = $(this).data('category-id');
+                const isActive = $(this).is(':checked');
+
+                $.post('@Url.Action("ToggleActive", "Category")/' + categoryId,
+                    { __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() })
+                    .done(function() {
+                        toastr.success('Status updated successfully');
+                    })
+                    .fail(function() {
+                        toastr.error('Error updating status');
+                        $(this).prop('checked', !isActive);
+                    });
+            });
+
+            // Delete button
+            $('.delete-btn').click(function() {
+                const categoryId = $(this).data('category-id');
+                const categoryName = $(this).data('category-name');
+
+                if (confirm(`Are you sure you want to delete "${categoryName}"?`)) {
+                    $.post('@Url.Action("Delete", "Category")/' + categoryId,
+                        { __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() })
+                        .done(function() {
+                            toastr.success('Category deleted successfully');
+                            window.location.reload();
+                        })
+                        .fail(function() {
+                            toastr.error('Error deleting category');
+                        });
+                }
+            });
+        });
+    </script>
+}

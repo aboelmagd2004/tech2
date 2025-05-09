@@ -1,0 +1,25 @@
+﻿@model TechXpress.Web.Areas.Admin.Models.Role.RemoveRoleViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Remove Roles from @Model.UserName</h2>
+
+<form asp-action="RemoveRole" method="post">
+    <input type="hidden" asp-for="UserId" />
+
+    <ul>
+        @foreach (var role in Model.Roles)
+        {
+            <li>
+                <input type="checkbox" name="RolesToRemove" value="@role"
+                @(Model.RolesToRemove.Contains(role) ? "checked" : "") />
+                @role
+            </li>
+        }
+    </ul>
+
+    <button type="submit" class="btn btn-danger">Remove Selected Roles</button>
+</form>

@@ -1,0 +1,177 @@
+﻿/* Login page styling */
+body {
+    font-family: 'Arial', sans - serif;
+background - color: #f0f2f5;
+    display: flex;
+justify - content: center;
+align - items: center;
+height: 100vh;
+margin: 0;
+}
+
+.login - container {
+display: flex;
+    justify - content: center;
+    align - items: center;
+    flex - direction: column;
+}
+
+.login - card {
+    background - color: #fff;
+    border - radius: 8px;
+    box - shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+width: 350px;
+padding: 30px;
+    text - align: center;
+}
+
+.login - title {
+    font - size: 24px;
+    font - weight: 600;
+    margin - bottom: 10px;
+}
+
+.login - subtitle {
+    font - size: 14px;
+    margin - bottom: 20px;
+color: #888;
+}
+
+.form - group {
+    margin - bottom: 20px;
+position: relative;
+}
+
+.form - label {
+    font - weight: 600;
+display: block;
+    margin - bottom: 5px;
+}
+
+.input - container {
+position: relative;
+}
+
+.form - control {
+width: 100 %;
+padding: 10px;
+    padding - left: 35px;
+    border - radius: 5px;
+border: 1px solid #ddd;
+    font - size: 14px;
+}
+
+.input - container i {
+    position: absolute;
+left: 10px;
+top: 50 %;
+transform: translateY(-50 %);
+color: #999;
+}
+
+.password - toggle {
+position: absolute;
+right: 10px;
+top: 50 %;
+transform: translateY(-50 %);
+border: none;
+background: transparent;
+cursor: pointer;
+color: #888;
+}
+
+.password - toggle i {
+    font-size: 18px;
+}
+
+.validation - message {
+color: red;
+    font - size: 12px;
+    margin - top: 5px;
+}
+
+.remember - me {
+    margin - bottom: 20px;
+    text - align: left;
+}
+
+.btn {
+    width: 100 %;
+padding: 10px;
+background - color: #007bff;
+    color: white;
+border: none;
+border - radius: 5px;
+font - size: 16px;
+cursor: pointer;
+transition: background - color 0.3s;
+}
+
+.btn: hover {
+    background - color: #0056b3;
+}
+
+.forgot - password {
+    margin - top: 10px;
+}
+
+.forgot - password a {
+    color: #007bff;
+    font - size: 14px;
+text - decoration: none;
+}
+
+.forgot - password a: hover {
+    text - decoration: underline;
+}
+
+.divider {
+    margin: 20px 0;
+display: flex;
+justify - content: center;
+align - items: center;
+color: #999;
+}
+
+.divider span
+{
+    margin: 0 10px;
+}
+
+.social - login button {
+    width: 100 %;
+padding: 10px;
+margin: 5px 0;
+background - color: #f4f4f4;
+    color: #555;
+    font - size: 14px;
+border: none;
+border - radius: 5px;
+display: flex;
+align - items: center;
+justify - content: center;
+cursor: pointer;
+}
+
+.social - login button i
+{
+    margin-right: 10px;
+}
+
+.social - login button: hover {
+    background - color: #ddd;
+}
+
+.signup - link {
+    margin - top: 20px;
+    font - size: 14px;
+}
+
+.signup - link a {
+    color: #007bff;
+    text - decoration: none;
+}
+
+.signup - link a: hover {
+    text - decoration: underline;
+}

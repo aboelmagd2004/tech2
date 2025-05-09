@@ -1,0 +1,34 @@
+﻿@using TechXpress.Data.Models
+@{
+    ViewData["Title"] = "Order Statistics";
+    var orderCounts = ViewBag.OrderCounts as Dictionary<OrderStatus, int>;
+    var totalSales = ViewBag.TotalSales as decimal?;
+}
+
+<h1>Order Statistics</h1>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<div class="mb-3">
+    <h4>Total Sales:</h4>
+    <p class="text-success">@totalSales?.ToString("C")</p>
+</div>
+
+<h4>Order Distribution:</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var status in orderCounts)
+        {
+            <tr>
+                <td>@status.Key</td>
+                <td>@status.Value</td>
+            </tr>
+        }
+    </tbody>
+</table>

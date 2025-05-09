@@ -1,0 +1,78 @@
+﻿@model TechXpress.Web.ViewModels.ReviewViewModel
+
+<div class="add-review mt-5">
+    <h4>Add Your Review</h4>
+    <form asp-action="AddReview" method="post">
+        <input type="hidden" asp-for="ProductId" />
+
+        <div class="form-group">
+            <label asp-for="Rating"></label>
+            <div class="rating-input">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" asp-for="Rating" value="@i" id="rating-@i" />
+                    <label for="rating-@i" class="star-rating">
+                        <i class="far fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </label>
+                }
+            </div>
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Comment"></label>
+            <textarea asp-for="Comment" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Comment" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+</div>
+
+<style>
+    .rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+        .rating-input input {
+            display: none;
+        }
+
+        .rating-input label {
+            color: #ddd;
+            font-size: 1.5rem;
+            padding: 0 0.1rem;
+            cursor: pointer;
+        }
+
+        .rating-input input:checked ~ label,
+        .rating-input input:hover ~ label {
+            color: #ffc107;
+        }
+
+        .rating-input label:hover,
+        .rating-input label:hover ~ label {
+            color: #ffc107;
+        }
+
+    .star-rating {
+        position: relative;
+    }
+
+        .star-rating .fas {
+            display: none;
+        }
+
+        .star-rating:hover .fas,
+        .rating-input input:checked ~ label .fas {
+            display: inline;
+        }
+
+        .star-rating:hover .far,
+        .rating-input input:checked ~ label .far {
+            display: none;
+        }
+</style>

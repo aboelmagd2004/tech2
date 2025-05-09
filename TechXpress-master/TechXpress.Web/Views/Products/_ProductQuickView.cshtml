@@ -1,0 +1,34 @@
+﻿@model TechXpress.Data.Models.Product
+
+<div class="row">
+    <div class="col-md-6">
+        <img src="@Model.ImageUrl" class="img-fluid" alt="@Model.Name" />
+    </div>
+    <div class="col-md-6">
+        <h3>@Model.Name</h3>
+        <div class="price mb-3">
+            <span class="h4 text-primary">@Model.Price.ToString("C")</span>
+        </div>
+        <p class="mb-4">@Model.Description</p>
+
+        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <div class="form-group">
+                <label>Quantity</label>
+                <select name="quantity" class="form-control" style="width: 100px;">
+                    @for (int i = 1; i <= 10 && i <= Model.StockQuantity; i++)
+                    {
+                    <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block mb-4">
+                <i class="fas fa-cart-plus"></i> Add to Cart
+            </button>
+        </form>
+
+        <div class="text-center">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-link">View Full Details</a>
+        </div>
+    </div>
+</div>
